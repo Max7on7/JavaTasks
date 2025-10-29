@@ -1,0 +1,165 @@
+// Practice5_Task1.java
+// Реализация заданий из "Практическая работа №5" — Задание №1.
+// Компилировать: javac Practice5_Task1.java
+// Запуск: java Practice5_Task1
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Practice5_Task1 {
+
+    // 1) Удаление дубликатов из ArrayList, используя contains()
+    public static <E> ArrayList<E> removeDuplicates(ArrayList<E> input) {
+        ArrayList<E> result = new ArrayList<>();
+        for (E elem : input) {
+            if (!result.contains(elem)) { // строго используя contains()
+                result.add(elem);
+            }
+        }
+        return result;
+    }
+
+    // 2) Линейный поиск в массиве: возвращает индекс первого вхождения или -1
+    // Используем equals для сравнения (подходит для ссылочных типов)
+    public static <E> int linearSearch(E[] array, E target) {
+        if (array == null) return -1;
+        for (int i = 0; i < array.length; i++) {
+            E e = array[i];
+            if (target == null) {
+                if (e == null) return i;
+            } else {
+                if (target.equals(e)) return i;
+            }
+        }
+        return -1;
+    }
+
+    // 3) Поиск наибольшего элемента в массиве с использованием Comparable
+    // Возвращает null для пустого или null-массива.
+    public static <T extends Comparable<T>> T findMax(T[] array) {
+        if (array == null || array.length == 0) return null;
+        T max = array[0];
+        for (int i = 1; i < array.length; i++) {
+            T cur = array[i];
+            if (cur == null) continue; // пропустить null-элементы
+            if (max == null || cur.compareTo(max) > 0) {
+                max = cur;
+            }
+        }
+        return max;
+    }
+
+    // 4) Класс Circle с полем radius и реализацией Comparable<Circle>
+    public static class Circle implements Comparable<Circle> {
+        private double radius;
+
+        public Circle(double radius) {
+            this.radius = radius;
+        }
+
+        public double getRadius() {
+            return radius;
+        }
+
+        public void setRadius(double radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public int compareTo(Circle o) {
+            // Сравнение по радиусу
+            return Double.compare(this.radius, o.radius);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Circle(radius=%.3f)", radius);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (!(obj instanceof Circle)) return false;
+            Circle other = (Circle) obj;
+            return Double.compare(radius, other.radius) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Double.valueOf(radius).hashCode();
+        }
+    }
+
+    // 5) Поиск наибольшего элемента в двумерном массиве (T extends Comparable<T>)
+    // Возвращает null, если массив пустой или все элементы null.
+    public static <T extends Comparable<T>> T findMax2D(T[][] array2D) {
+        if (array2D == null || array2D.length == 0) return null;
+        T max = null;
+        for (int i = 0; i < array2D.length; i++) {
+            T[] row = array2D[i];
+            if (row == null) continue;
+            for (int j = 0; j < row.length; j++) {
+                T cur = row[j];
+                if (cur == null) continue;
+                if (max == null || cur.compareTo(max) > 0) {
+                    max = cur;
+                }
+            }
+        }
+        return max;
+    }
+
+    // --- Тесты / демонстрация работы методов ---
+    public static void main(String[] args) {
+        System.out.println("=== Тест: removeDuplicates ===");
+        ArrayList<Integer> ints = new ArrayList<>(Arrays.asList(1, 2, 2, 3, 1, 4, 2, 5));
+        System.out.println("Исходный список: " + ints);
+        ArrayList<Integer> noDupInts = removeDuplicates(ints);
+        System.out.println("Без дубликатов: " + noDupInts);
+
+        ArrayList<String> strs = new ArrayList<>(Arrays.asList("a", "b", "a", "c", "b", "d", null, null));
+        System.out.println("\nИсходный список строк (с null): " + strs);
+        ArrayList<String> noDupStrs = removeDuplicates(strs);
+        System.out.println("Без дубликатов: " + noDupStrs);
+
+        System.out.println("\n=== Тест: linearSearch ===");
+        Integer[] arr = new Integer[] { 10, 20, 30, 40, 30 };
+        System.out.println("Массив: " + Arrays.toString(arr));
+        System.out.println("Поиск 30 -> индекс: " + linearSearch(arr, 30));
+        System.out.println("Поиск 25 -> индекс: " + linearSearch(arr, 25));
+        System.out.println("Поиск null в массиве без null -> " + linearSearch(arr, null));
+
+        System.out.println("\n=== Тест: findMax (Comparable) ===");
+        Integer[] nums = new Integer[] { 3, 7, 2, 9, 5 };
+        System.out.println("Максимум в Integer[]: " + findMax(nums));
+
+        System.out.println("\n=== Тест: Circle и findMax для Circle[] ===");
+        Circle[] circles = new Circle[] {
+            new Circle(1.0),
+            new Circle(2.5),
+            new Circle(0.75),
+            new Circle(2.5),
+            new Circle(3.14)
+        };
+        System.out.println("Circles: " + Arrays.toString(circles));
+        Circle maxCircle = findMax(circles);
+        System.out.println("Максимальный круг (по радиусу): " + maxCircle);
+
+        System.out.println("\n=== Тест: findMax2D ===");
+        Integer[][] grid = new Integer[][] {
+            {1, 2, 3},
+            {7, 5, 6},
+            null,
+            {4, 100, 2}
+        };
+        System.out.println("Максимум в 2D Integer[][]: " + findMax2D(grid));
+
+        Circle[][] circleGrid = new Circle[][] {
+            { new Circle(1.1), new Circle(2.2) },
+            { new Circle(0.5), new Circle(2.9), new Circle(2.0) },
+            {}
+        };
+        System.out.println("Максимум в 2D Circle[][]: " + findMax2D(circleGrid));
+    }
+}
